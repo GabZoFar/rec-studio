@@ -1,0 +1,381 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		079FC41D7BF7199207CF0096 /* ScreenRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B12B548425A8005A48A0A3A2 /* ScreenRecorder.swift */; };
+		233B410649AB267D482CEDA4 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D7A73F6CA0AB4E1B58686D0 /* EditorView.swift */; };
+		2FC600DC3F5E160DCC466DBC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34192D4A07189ACF46EAFED2 /* ContentView.swift */; };
+		360CD3B3319D29B7C5ED4F64 /* RecStudioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B291BBA4ADFB1FB39954162D /* RecStudioApp.swift */; };
+		4DBF56EF35F199829B2B14D9 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE859B30C30CAF14B262CA9 /* AppState.swift */; };
+		5ACD18C9B3FAFDA9AB58AA45 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC12B184196EAE34614B88 /* SetupView.swift */; };
+		664E5DDECAF61896F403CF74 /* ZoomEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E30A2C029EF3C4FCE9D7DA4 /* ZoomEngine.swift */; };
+		9877A80C6DD29795D5EA0C35 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 87D27A5E76B233933D86FDCC /* Assets.xcassets */; };
+		C54157886F3DFEE3FEC4D792 /* VideoExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 538453A1FC4070C23B387479 /* VideoExporter.swift */; };
+		E150CA1EE6FC51B86E38EBE9 /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6170E4475CD185E368B8D60A /* RecordingView.swift */; };
+		F7743F5BF74C347001A29F59 /* CursorTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043B218E89AA10DB741F668B /* CursorTracker.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		043B218E89AA10DB741F668B /* CursorTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CursorTracker.swift; sourceTree = "<group>"; };
+		34192D4A07189ACF46EAFED2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		538453A1FC4070C23B387479 /* VideoExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoExporter.swift; sourceTree = "<group>"; };
+		6170E4475CD185E368B8D60A /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
+		7E30A2C029EF3C4FCE9D7DA4 /* ZoomEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomEngine.swift; sourceTree = "<group>"; };
+		87D27A5E76B233933D86FDCC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8D7A73F6CA0AB4E1B58686D0 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		9F6CD92C03904EEA96C7CC6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		ADAC12B184196EAE34614B88 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
+		B12B548425A8005A48A0A3A2 /* ScreenRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecorder.swift; sourceTree = "<group>"; };
+		B291BBA4ADFB1FB39954162D /* RecStudioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecStudioApp.swift; sourceTree = "<group>"; };
+		DB2294E4FEA17319EA93A56F /* RecStudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecStudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFE859B30C30CAF14B262CA9 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		F10033948D1824383BCC7D54 /* RecStudio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecStudio.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		14E15BA18F4D86734283BD66 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B291BBA4ADFB1FB39954162D /* RecStudioApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		2C4A14F1C82ECB28FEFC7C94 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DB2294E4FEA17319EA93A56F /* RecStudio.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3B001FA458BE386F2615ECA0 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				043B218E89AA10DB741F668B /* CursorTracker.swift */,
+				B12B548425A8005A48A0A3A2 /* ScreenRecorder.swift */,
+				538453A1FC4070C23B387479 /* VideoExporter.swift */,
+				7E30A2C029EF3C4FCE9D7DA4 /* ZoomEngine.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		54E75A81BC952A02862C889C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				34192D4A07189ACF46EAFED2 /* ContentView.swift */,
+				8D7A73F6CA0AB4E1B58686D0 /* EditorView.swift */,
+				6170E4475CD185E368B8D60A /* RecordingView.swift */,
+				ADAC12B184196EAE34614B88 /* SetupView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		5EBA4167E9ED58D42A5260A9 /* RecStudio */ = {
+			isa = PBXGroup;
+			children = (
+				14E15BA18F4D86734283BD66 /* App */,
+				D91428400C201593A1DC61C9 /* Models */,
+				605DBA0D0B37C4641B83EDB2 /* Resources */,
+				3B001FA458BE386F2615ECA0 /* Services */,
+				54E75A81BC952A02862C889C /* Views */,
+				9F6CD92C03904EEA96C7CC6A /* Info.plist */,
+				F10033948D1824383BCC7D54 /* RecStudio.entitlements */,
+			);
+			path = RecStudio;
+			sourceTree = "<group>";
+		};
+		605DBA0D0B37C4641B83EDB2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				87D27A5E76B233933D86FDCC /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		D91428400C201593A1DC61C9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DFE859B30C30CAF14B262CA9 /* AppState.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FBD2B7F8697DA4887005415E = {
+			isa = PBXGroup;
+			children = (
+				5EBA4167E9ED58D42A5260A9 /* RecStudio */,
+				2C4A14F1C82ECB28FEFC7C94 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DF68428130BD1A932DE877C0 /* RecStudio */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 65CC763E919CC7429DF02DCD /* Build configuration list for PBXNativeTarget "RecStudio" */;
+			buildPhases = (
+				8627D5F15D6677B0825A6178 /* Sources */,
+				03E3C9B83503372ED8449AD6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RecStudio;
+			packageProductDependencies = (
+			);
+			productName = RecStudio;
+			productReference = DB2294E4FEA17319EA93A56F /* RecStudio.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		40B59BC70F0A575F1A2E9D5A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = 72877DDD1D33C2C485A99254 /* Build configuration list for PBXProject "RecStudio" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = FBD2B7F8697DA4887005415E;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DF68428130BD1A932DE877C0 /* RecStudio */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		03E3C9B83503372ED8449AD6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9877A80C6DD29795D5EA0C35 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8627D5F15D6677B0825A6178 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4DBF56EF35F199829B2B14D9 /* AppState.swift in Sources */,
+				2FC600DC3F5E160DCC466DBC /* ContentView.swift in Sources */,
+				F7743F5BF74C347001A29F59 /* CursorTracker.swift in Sources */,
+				233B410649AB267D482CEDA4 /* EditorView.swift in Sources */,
+				360CD3B3319D29B7C5ED4F64 /* RecStudioApp.swift in Sources */,
+				E150CA1EE6FC51B86E38EBE9 /* RecordingView.swift in Sources */,
+				079FC41D7BF7199207CF0096 /* ScreenRecorder.swift in Sources */,
+				5ACD18C9B3FAFDA9AB58AA45 /* SetupView.swift in Sources */,
+				C54157886F3DFEE3FEC4D792 /* VideoExporter.swift in Sources */,
+				664E5DDECAF61896F403CF74 /* ZoomEngine.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3311E2A206E974DBA9640780 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = RecStudio/RecStudio.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = RecStudio/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.recstudio.app;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		50E71B96A649C3BF76B81730 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = RecStudio/RecStudio.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = RecStudio/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.recstudio.app;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		7AA4F6A55C5396E430DB2DEF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		DD07F1014E3DC18BBC675241 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		65CC763E919CC7429DF02DCD /* Build configuration list for PBXNativeTarget "RecStudio" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3311E2A206E974DBA9640780 /* Debug */,
+				50E71B96A649C3BF76B81730 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		72877DDD1D33C2C485A99254 /* Build configuration list for PBXProject "RecStudio" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7AA4F6A55C5396E430DB2DEF /* Debug */,
+				DD07F1014E3DC18BBC675241 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 40B59BC70F0A575F1A2E9D5A /* Project object */;
+}
