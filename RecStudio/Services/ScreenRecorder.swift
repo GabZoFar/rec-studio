@@ -2,12 +2,14 @@ import Foundation
 import ScreenCaptureKit
 import AVFoundation
 import CoreImage
+import AppKit
 
 final class ScreenRecorder: NSObject, ObservableObject {
     @Published var availableDisplays: [SCDisplay] = []
     @Published var isRecording = false
     @Published var recordingDuration: TimeInterval = 0
     @Published var previewImage: CGImage?
+    @Published var permissionDenied = false
 
     private(set) var recordedVideoURL: URL?
     private(set) var cursorTracker = CursorTracker()
@@ -30,14 +32,18 @@ final class ScreenRecorder: NSObject, ObservableObject {
                 false, onScreenWindowsOnly: true
             )
             availableDisplays = content.displays
+            permissionDenied = false
         } catch {
-            print("Failed to fetch displays: \(error)")
+            permissionDenied = true
         }
     }
 
     @MainActor
-    func startRecording(display: SCDisplay, frameRate: Int = 60) async throws {
-        // Exclude our own app windows from capture
+    func startRecording(
+        display: SCDisplay,
+        captureMode: CaptureMode = .fullScreen,
+        frameRate: Int = 60
+    ) async throws {
         let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
         let appBundleID = Bundle.main.bundleIdentifier ?? ""
         let excludedWindows = content.windows.filter {
@@ -45,13 +51,27 @@ final class ScreenRecorder: NSObject, ObservableObject {
         }
 
         let filter = SCContentFilter(display: display, excludingWindows: excludedWindows)
+        let scaleFactor = NSScreen.main?.backingScaleFactor ?? 2.0
 
         let config = SCStreamConfiguration()
-        config.width = display.width * 2
-        config.height = display.height * 2
         config.minimumFrameInterval = CMTime(value: 1, timescale: CMTimeScale(frameRate))
         config.pixelFormat = kCVPixelFormatType_32BGRA
         config.showsCursor = true
+
+        let captureRect: CGRect
+
+        switch captureMode {
+        case .fullScreen:
+            config.width = Int(CGFloat(display.width) * scaleFactor)
+            config.height = Int(CGFloat(display.height) * scaleFactor)
+            captureRect = CGRect(x: 0, y: 0, width: display.width, height: display.height)
+
+        case .region(let rect):
+            config.sourceRect = rect
+            config.width = Int(rect.width * scaleFactor)
+            config.height = Int(rect.height * scaleFactor)
+            captureRect = rect
+        }
 
         let tempURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("recstudio_\(UUID().uuidString).mov")
@@ -103,8 +123,8 @@ final class ScreenRecorder: NSObject, ObservableObject {
         self.stream = captureStream
 
         cursorTracker.startTracking(
-            displayBounds: CGRect(x: 0, y: 0, width: display.width, height: display.height),
-            scaleFactor: 2
+            captureRect: captureRect,
+            scaleFactor: scaleFactor
         )
 
         recordingStartDate = Date()

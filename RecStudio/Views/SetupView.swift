@@ -9,8 +9,9 @@ struct SetupView: View {
             header
             Divider().background(Color.appBorder)
             ScrollView {
-                VStack(spacing: 32) {
+                VStack(spacing: 28) {
                     displayPicker
+                    captureModeSection
                     settingsSection
                     recordButton
                 }
@@ -48,7 +49,9 @@ struct SetupView: View {
                 .foregroundStyle(Color.appTextPrimary)
 
             let displays = appState.screenRecorder.availableDisplays
-            if displays.isEmpty {
+            if appState.screenRecorder.permissionDenied {
+                permissionPrompt
+            } else if displays.isEmpty {
                 HStack {
                     ProgressView()
                         .scaleEffect(0.8)
@@ -76,6 +79,153 @@ struct SetupView: View {
                 }
             }
         }
+    }
+
+    private var permissionPrompt: some View {
+        VStack(spacing: 14) {
+            Image(systemName: "lock.shield")
+                .font(.system(size: 36))
+                .foregroundStyle(Color.appAccent)
+
+            Text("Screen Recording Permission Required")
+                .font(.headline)
+                .foregroundStyle(Color.appTextPrimary)
+
+            Text("RecStudio needs permission to capture your screen. Open System Settings and enable RecStudio under Privacy & Security → Screen Recording.")
+                .font(.subheadline)
+                .foregroundStyle(Color.appTextSecondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 400)
+
+            HStack(spacing: 12) {
+                Button("Open System Settings") {
+                    if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Color.appAccent)
+
+                Button("Retry") {
+                    Task { await appState.screenRecorder.refreshAvailableContent() }
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 32)
+    }
+
+    // MARK: - Capture Mode
+
+    private var captureModeSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Label("Capture Mode", systemImage: "crop")
+                .font(.headline)
+                .foregroundStyle(Color.appTextPrimary)
+
+            HStack(spacing: 12) {
+                captureModeButton(
+                    title: "Full Screen",
+                    icon: "display",
+                    isSelected: !appState.captureMode.isRegion
+                ) {
+                    withAnimation { appState.captureMode = .fullScreen }
+                }
+
+                captureModeButton(
+                    title: "Select Region",
+                    icon: "rectangle.dashed",
+                    isSelected: appState.captureMode.isRegion
+                ) {
+                    showRegionPicker()
+                }
+            }
+
+            if let rect = appState.captureMode.regionRect {
+                HStack(spacing: 10) {
+                    Image(systemName: "viewfinder")
+                        .foregroundStyle(Color.appAccent)
+                    Text("\(Int(rect.width)) × \(Int(rect.height))")
+                        .font(.system(.subheadline, design: .monospaced).weight(.medium))
+                        .foregroundStyle(Color.appTextPrimary)
+                    Text("at (\(Int(rect.origin.x)), \(Int(rect.origin.y)))")
+                        .font(.caption)
+                        .foregroundStyle(Color.appTextSecondary)
+                    Spacer()
+                    Button("Change") { showRegionPicker() }
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(Color.appAccent)
+                        .buttonStyle(.plain)
+                }
+                .padding(12)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.appAccent.opacity(0.1))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .strokeBorder(Color.appAccent.opacity(0.3), lineWidth: 1)
+                        )
+                )
+            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.appSurface)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(Color.appBorder, lineWidth: 1)
+                )
+        )
+    }
+
+    private func captureModeButton(
+        title: String, icon: String, isSelected: Bool, action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Image(systemName: icon)
+                    .font(.subheadline)
+                Text(title)
+                    .font(.subheadline.weight(.medium))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(isSelected ? Color.appAccent.opacity(0.2) : Color.appSurfaceHover)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(
+                                isSelected ? Color.appAccent : Color.appBorder,
+                                lineWidth: isSelected ? 1.5 : 1
+                            )
+                    )
+            )
+            .foregroundStyle(isSelected ? Color.appAccent : Color.appTextSecondary)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func showRegionPicker() {
+        let picker = RegionPickerController()
+        let state = appState
+
+        picker.onRegionSelected = { rect in
+            DispatchQueue.main.async {
+                state.captureMode = .region(rect)
+                state.regionPickerController = nil
+            }
+        }
+        picker.onCancelled = {
+            DispatchQueue.main.async {
+                state.regionPickerController = nil
+            }
+        }
+
+        appState.regionPickerController = picker
+        picker.show()
     }
 
     // MARK: - Settings
@@ -125,7 +275,7 @@ struct SetupView: View {
     // MARK: - Record Button
 
     private var recordButton: some View {
-        Button(action: startCountdown) {
+        Button(action: startRecording) {
             HStack(spacing: 10) {
                 Circle()
                     .fill(.red)
@@ -142,35 +292,17 @@ struct SetupView: View {
             .foregroundStyle(.white)
         }
         .buttonStyle(.plain)
-        .disabled(appState.selectedDisplay == nil)
-        .opacity(appState.selectedDisplay == nil ? 0.5 : 1)
+        .disabled(!canRecord)
+        .opacity(canRecord ? 1 : 0.5)
     }
 
-    private func startCountdown() {
-        guard appState.selectedDisplay != nil else { return }
-
-        Task {
-            for i in (1...3).reversed() {
-                withAnimation { appState.phase = .countdown(i) }
-                try? await Task.sleep(for: .seconds(1))
-            }
-            await startRecording()
-        }
+    private var canRecord: Bool {
+        if appState.captureMode.isRegion { return appState.captureMode.regionRect != nil }
+        return appState.selectedDisplay != nil
     }
 
-    @MainActor
-    private func startRecording() async {
-        guard let display = appState.selectedDisplay else { return }
-        do {
-            try await appState.screenRecorder.startRecording(
-                display: display,
-                frameRate: appState.exportSettings.frameRate
-            )
-            withAnimation { appState.phase = .recording }
-        } catch {
-            appState.errorMessage = error.localizedDescription
-            withAnimation { appState.phase = .setup }
-        }
+    private func startRecording() {
+        Task { await appState.beginRecording() }
     }
 }
 

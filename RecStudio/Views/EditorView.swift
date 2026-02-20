@@ -293,7 +293,7 @@ struct EditorView: View {
                 try await exporter.export(
                     sourceURL: sourceURL,
                     outputURL: outputURL,
-                    cursorPoints: appState.screenRecorder.cursorTracker.points,
+                    cursorEvents: appState.screenRecorder.cursorTracker.events,
                     settings: appState.exportSettings
                 ) { progress in
                     DispatchQueue.main.async {

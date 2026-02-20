@@ -25,7 +25,7 @@ final class VideoExporter {
     func export(
         sourceURL: URL,
         outputURL: URL,
-        cursorPoints: [CursorPoint],
+        cursorEvents: [CursorEvent],
         settings: ExportSettings,
         progress: @escaping (Double) -> Void
     ) async throws {
@@ -39,7 +39,7 @@ final class VideoExporter {
 
         let zoomEngine = ZoomEngine(sourceSize: naturalSize, maxZoom: settings.maxZoom)
         let keyframes = settings.enableZoom
-            ? zoomEngine.computeKeyframes(from: cursorPoints)
+            ? zoomEngine.computeKeyframes(from: cursorEvents)
             : [ZoomKeyframe(time: 0, rect: CGRect(origin: .zero, size: naturalSize))]
 
         let reader = try AVAssetReader(asset: asset)
@@ -156,24 +156,20 @@ final class VideoExporter {
 
         var frame = CIImage(cvPixelBuffer: pixelBuffer)
 
-        // Crop to zoom region
         frame = frame.cropped(to: zoomRect)
         frame = frame.transformed(by: CGAffineTransform(
             translationX: -zoomRect.origin.x, y: -zoomRect.origin.y
         ))
 
-        // Scale to content area
         let scaleX = contentArea.width / zoomRect.width
         let scaleY = contentArea.height / zoomRect.height
         frame = frame.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
 
-        // Apply rounded corners via mask
         let maskedFrame = frame.applyingFilter("CIBlendWithMask", parameters: [
             kCIInputBackgroundImageKey: CIImage.empty(),
             kCIInputMaskImageKey: mask,
         ])
 
-        // Create shadow
         let shadow = maskedFrame
             .applyingFilter("CIColorMatrix", parameters: [
                 "inputRVector": CIVector(x: 0, y: 0, z: 0, w: 0),
@@ -192,21 +188,15 @@ final class VideoExporter {
             ))
             .transformed(by: CGAffineTransform(translationX: 0, y: -4))
 
-        // Position content in center
-        let offsetX = settings.padding
-        let offsetY = settings.padding
-        let translate = CGAffineTransform(translationX: offsetX, y: offsetY)
-
+        let translate = CGAffineTransform(translationX: settings.padding, y: settings.padding)
         let positionedShadow = shadow.transformed(by: translate)
         let positionedFrame = maskedFrame.transformed(by: translate)
 
-        // Composite layers: background → shadow → frame
         let composite = positionedFrame
             .composited(over: positionedShadow)
             .composited(over: background)
             .cropped(to: CGRect(origin: .zero, size: outputSize))
 
-        // Render to pixel buffer
         var outputBuffer: CVPixelBuffer?
         let status = CVPixelBufferCreate(
             kCFAllocatorDefault,

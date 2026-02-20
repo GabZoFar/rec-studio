@@ -9,6 +9,21 @@ enum RecordingPhase: Equatable {
     case editing
 }
 
+enum CaptureMode: Equatable {
+    case fullScreen
+    case region(CGRect)
+
+    var isRegion: Bool {
+        if case .region = self { return true }
+        return false
+    }
+
+    var regionRect: CGRect? {
+        if case .region(let rect) = self { return rect }
+        return nil
+    }
+}
+
 enum BackgroundPreset: String, CaseIterable, Identifiable {
     case midnight = "Midnight"
     case ocean = "Ocean"
@@ -51,6 +66,7 @@ struct ExportSettings {
 final class AppState: ObservableObject {
     @Published var phase: RecordingPhase = .setup
     @Published var selectedDisplay: SCDisplay?
+    @Published var captureMode: CaptureMode = .fullScreen
     @Published var rawVideoURL: URL?
     @Published var exportedVideoURL: URL?
     @Published var exportProgress: Double = 0
@@ -58,6 +74,30 @@ final class AppState: ObservableObject {
     @Published var exportSettings = ExportSettings()
 
     let screenRecorder = ScreenRecorder()
+    var regionPickerController: RegionPickerController?
+
+    @MainActor
+    func beginRecording() async {
+        let display = selectedDisplay ?? screenRecorder.availableDisplays.first
+        guard let display else { return }
+
+        for i in (1...3).reversed() {
+            withAnimation { phase = .countdown(i) }
+            try? await Task.sleep(for: .seconds(1))
+        }
+
+        do {
+            try await screenRecorder.startRecording(
+                display: display,
+                captureMode: captureMode,
+                frameRate: exportSettings.frameRate
+            )
+            withAnimation { phase = .recording }
+        } catch {
+            errorMessage = error.localizedDescription
+            withAnimation { phase = .setup }
+        }
+    }
 }
 
 // MARK: - Color Utilities
