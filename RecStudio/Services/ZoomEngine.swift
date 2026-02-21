@@ -50,8 +50,13 @@ final class ZoomEngine {
 
             let visibleW = sourceSize.width / zoom
             let visibleH = sourceSize.height / zoom
+
+            // Cursor coords use top-left origin (screen space) but CIImage
+            // crop rects use bottom-left origin, so flip Y.
+            let ciY = sourceSize.height - smoothCY
+
             var x = smoothCX - visibleW / 2
-            var y = smoothCY - visibleH / 2
+            var y = ciY - visibleH / 2
             x = max(0, min(x, sourceSize.width - visibleW))
             y = max(0, min(y, sourceSize.height - visibleH))
 
