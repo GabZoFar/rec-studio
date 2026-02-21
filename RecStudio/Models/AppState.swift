@@ -90,7 +90,8 @@ final class AppState: ObservableObject {
             try await screenRecorder.startRecording(
                 display: display,
                 captureMode: captureMode,
-                frameRate: exportSettings.frameRate
+                frameRate: exportSettings.frameRate,
+                settings: exportSettings
             )
             withAnimation { phase = .recording }
         } catch {

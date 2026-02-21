@@ -20,11 +20,13 @@ final class CursorTracker {
     private var positionTimer: Timer?
     private var globalClickMonitor: Any?
     private var startTime: Date?
-    private var captureOrigin: CGPoint = .zero
+    private(set) var captureOrigin: CGPoint = .zero
+    private(set) var captureSize: CGSize = .zero
     private var scaleFactor: CGFloat = 2
 
     func startTracking(captureRect: CGRect, scaleFactor: CGFloat) {
         self.captureOrigin = captureRect.origin
+        self.captureSize = captureRect.size
         self.scaleFactor = scaleFactor
         self.events = []
         self.startTime = Date()
@@ -73,9 +75,10 @@ final class CursorTracker {
 
     private func recordClick(_ nsEvent: NSEvent) {
         guard let startTime else { return }
-        guard let cgEvent = CGEvent(source: nil) else { return }
-
-        let location = cgEvent.location
+        // Use the event's own CGEvent location — this is the cursor position at the moment
+        // the click occurred. CGEvent(source: nil) would sample the *current* position,
+        // which is wrong for subsequent clicks after the cursor has moved.
+        guard let location = nsEvent.cgEvent?.location else { return }
         let elapsed = Date().timeIntervalSince(startTime)
         let eventType: CursorEventType = nsEvent.type == .leftMouseDown ? .leftClick : .rightClick
 
