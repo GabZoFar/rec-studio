@@ -40,9 +40,10 @@ final class ZoomEngine {
             let zoom = zoomLevel(at: t, clusters: clusters)
 
             if zoom > 1.01 {
-                let target = zoomTarget(at: t, clusters: clusters) ?? CGPoint(x: move.x, y: move.y)
-                smoothCX = smoothCX * 0.85 + target.x * 0.15
-                smoothCY = smoothCY * 0.85 + target.y * 0.15
+                // While zoomed, follow the actual cursor so the view pans naturally
+                // after the click instead of being locked to a static point.
+                smoothCX = smoothCX * 0.85 + move.x * 0.15
+                smoothCY = smoothCY * 0.85 + move.y * 0.15
             } else {
                 smoothCX = smoothCX * 0.95 + move.x * 0.05
                 smoothCY = smoothCY * 0.95 + move.y * 0.05

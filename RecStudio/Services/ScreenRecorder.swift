@@ -29,7 +29,10 @@ final class ScreenRecorder: NSObject, ObservableObject {
     private var previewBackground: CIImage?
     private var previewMask: CIImage?
     private var previewOutputSize: CGSize = .zero
+    /// Scaled video dimensions within the content area (preserves source aspect ratio).
     private var previewContentSize: CGSize = .zero
+    /// Offset to center the video inside the padded content area (pillarbox / letterbox).
+    private var previewVideoOffset: CGPoint = .zero
     private var previewPadding: CGFloat = 0
 
     private let captureQueue = DispatchQueue(label: "com.recstudio.capture", qos: .userInitiated)
@@ -200,7 +203,7 @@ final class ScreenRecorder: NSObject, ObservableObject {
     /// Called once per recording session on the main thread.
     private func setupPreviewAssets(sourceSize: CGSize, settings: ExportSettings) {
         // Scale the export output size down to a manageable preview resolution
-        // while keeping the same aspect ratio (including padding).
+        // while keeping the same aspect ratio.
         let exportW = CGFloat(settings.width)
         let exportH = CGFloat(settings.height)
         let scale = min(800 / exportW, 450 / exportH)
@@ -212,7 +215,18 @@ final class ScreenRecorder: NSObject, ObservableObject {
         previewPadding = settings.padding * pvScale
         let contentW = pvW - previewPadding * 2
         let contentH = pvH - previewPadding * 2
-        previewContentSize = CGSize(width: contentW, height: contentH)
+
+        // Fit the source video inside the content area while preserving its aspect ratio.
+        // previewContentSize is the actual video size (not the full content area), so the
+        // scaleX/scaleY formulas in updatePreview become uniform automatically.
+        let fitToContent = min(contentW / sourceSize.width, contentH / sourceSize.height)
+        let scaledVideoW = sourceSize.width  * fitToContent
+        let scaledVideoH = sourceSize.height * fitToContent
+        previewContentSize = CGSize(width: scaledVideoW, height: scaledVideoH)
+        previewVideoOffset = CGPoint(
+            x: (contentW - scaledVideoW) / 2,
+            y: (contentH - scaledVideoH) / 2
+        )
 
         let scaledRadius = settings.cornerRadius * pvScale
 
@@ -292,8 +306,11 @@ final class ScreenRecorder: NSObject, ObservableObject {
             ])
         }
 
-        // Position over background
-        let translate = CGAffineTransform(translationX: previewPadding, y: previewPadding)
+        // Position over background (padding + letterbox/pillarbox offset)
+        let translate = CGAffineTransform(
+            translationX: previewPadding + previewVideoOffset.x,
+            y: previewPadding + previewVideoOffset.y
+        )
         let positionedFrame = frame.transformed(by: translate)
 
         let composite: CIImage

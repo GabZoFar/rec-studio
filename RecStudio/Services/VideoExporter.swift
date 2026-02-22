@@ -89,10 +89,18 @@ final class VideoExporter {
             startColor: settings.background.cgColors.start,
             endColor: settings.background.cgColors.end
         )
-        let mask = createRoundedRectMask(
-            size: contentSize(outputSize: outputSize, padding: settings.padding),
-            cornerRadius: settings.cornerRadius
+        // The mask is sized to the actual scaled video content, not the full content area,
+        // so it stays sharp regardless of the source display's aspect ratio.
+        let contentAreaSize = contentSize(outputSize: outputSize, padding: settings.padding)
+        let videoFitScale = min(
+            contentAreaSize.width  / naturalSize.width,
+            contentAreaSize.height / naturalSize.height
         )
+        let scaledVideoSize = CGSize(
+            width:  naturalSize.width  * videoFitScale,
+            height: naturalSize.height * videoFitScale
+        )
+        let mask = createRoundedRectMask(size: scaledVideoSize, cornerRadius: settings.cornerRadius)
 
         while let sampleBuffer = readerOutput.copyNextSampleBuffer() {
             guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { continue }
@@ -161,9 +169,17 @@ final class VideoExporter {
             translationX: -zoomRect.origin.x, y: -zoomRect.origin.y
         ))
 
-        let scaleX = contentArea.width / zoomRect.width
-        let scaleY = contentArea.height / zoomRect.height
-        frame = frame.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
+        // Uniform scale: fit the zoom rect inside the content area while preserving
+        // the source aspect ratio. This prevents horizontal/vertical stretching when
+        // the display aspect ratio differs from the chosen export resolution.
+        let fitScale = min(contentArea.width / zoomRect.width, contentArea.height / zoomRect.height)
+        frame = frame.transformed(by: CGAffineTransform(scaleX: fitScale, y: fitScale))
+
+        let scaledW = zoomRect.width  * fitScale
+        let scaledH = zoomRect.height * fitScale
+        // Center the scaled video within the content area (pillarbox / letterbox).
+        let offsetX = (contentArea.width  - scaledW) / 2
+        let offsetY = (contentArea.height - scaledH) / 2
 
         let maskedFrame = frame.applyingFilter("CIBlendWithMask", parameters: [
             kCIInputBackgroundImageKey: CIImage.empty(),
@@ -183,12 +199,15 @@ final class VideoExporter {
             .cropped(to: CGRect(
                 x: -settings.shadowRadius * 2,
                 y: -settings.shadowRadius * 2,
-                width: contentArea.width + settings.shadowRadius * 4,
-                height: contentArea.height + settings.shadowRadius * 4
+                width:  scaledW + settings.shadowRadius * 4,
+                height: scaledH + settings.shadowRadius * 4
             ))
             .transformed(by: CGAffineTransform(translationX: 0, y: -4))
 
-        let translate = CGAffineTransform(translationX: settings.padding, y: settings.padding)
+        let translate = CGAffineTransform(
+            translationX: settings.padding + offsetX,
+            y:            settings.padding + offsetY
+        )
         let positionedShadow = shadow.transformed(by: translate)
         let positionedFrame = maskedFrame.transformed(by: translate)
 
